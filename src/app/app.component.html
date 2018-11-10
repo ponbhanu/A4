@@ -1,0 +1,233 @@
+<div class="container pad50 padding-btm100">
+    <div class="navbar navbar-default">
+        <div class="navbar-header">
+            <a class="navbar-brand" href>File Upload</a>
+        </div>
+    </div>
+    <toaster-container></toaster-container>
+    <div class="tab">
+        <button id="fileUploadTab" class="tablinks tabsBgColor" (click)="onClickTabs('fileUploadTab')">File upload</button>
+        <button id="ocrTab" class="tablinks" (click)="onClickTabs('ocrTab')">O C R</button>
+        <button id="mlTab" class="tablinks" (click)="onClickTabs('mlTab')">M L</button>
+    </div>
+
+    <div id="fileUpload" class="tabcontent tabHeight" *ngIf="fileUploadTab">
+        <div class="row">
+            <div class="col-md-3">
+                <h3>Select files</h3>
+                <input type="file" name="img" multiple (change)="onChange($event)">
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <h3>Upload Status</h3>
+            <p>Files Count: {{files.length}}</p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>S.No.</th>
+                        <th>Select</th>
+                        <th width="40%" class="text-center">Name</th>
+                        <th>Size</th>
+                        <th width="20%" class="text-center">Is Primary</th>
+                        <th class="text-center">Actions</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let file of files">
+                        <td>
+                            <strong>{{file.number}}</strong>
+                        </td>
+                        <td>
+                            <input type="checkbox" value="" (change)="onClickCheckBox(file)">
+                        </td>
+                        <td>
+                            {{file.name}}
+                        </td>
+                        <td nowrap>{{ file.size/1024/1024 | number:'.2' }} MB</td>
+
+                        <td class="text-center">
+                            <label>
+                                <input type="radio" id="radio_{{file.id}}" name="is_primary" (change)="onClickRadio(file)">
+                            </label>
+                        </td>
+                        <td nowrap class="text-center">
+                            <button type="button" class="btn btn-danger btn-xs" (click)="manageActions(file.id,'delete')">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </button>
+                        </td>
+                        <td class="text-center">
+                            <span *ngIf="file.status === 'success'">
+                                <i class="success-mark  glyphicon glyphicon-ok"></i>
+                            </span>
+                            <span *ngIf="file.status === 'fail'">
+                                <i class="fail-mark glyphicon glyphicon-ban-circle"></i>
+                            </span>
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="marBot30">
+                <div>
+                    Queue progress:
+                    <div id="myProgress">
+                        <div id="bar" class="bar-grn"></div>
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-success btn-s" (click)="uploadAllFiles()">
+                <span class="glyphicon glyphicon-upload"></span> Upload all
+            </button>
+            <button type="button" class="btn btn-warning btn-s" (click)="cancel()">
+                <span class="glyphicon glyphicon-ban-circle"></span> Cancel all
+            </button>
+            <button type="button" class="btn btn-danger btn-s" (click)="cancel()">
+                <span class="glyphicon glyphicon-trash"></span> Remove all
+            </button>
+        </div>
+        <div class="col-md-12 marTop70" *ngIf="isExecuteMl">
+            <h4>OCR Status</h4>
+            <ocr-tab></ocr-tab>
+        </div>
+        <div class="col-md-12 marTop50" *ngIf="isExecuteMl">
+            <h4>ML Status</h4>
+            <ml-tab></ml-tab>
+        </div>
+    </div>
+
+    <div id="ocr" class="tabcontent tabHeight" *ngIf="ocrTab">
+        <div class="marTop30">
+            <ocr-tab></ocr-tab>
+        </div>
+    </div>
+
+    <div id="ml" class="tabcontent tabHeight" *ngIf="mlTab">
+        <div class="marTop30">
+            <ml-tab></ml-tab>
+        </div>
+    </div>
+
+    <div id="Tokyo" class="tabcontent" *ngIf="fileUpload">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-3">
+                    <div>
+                        <p>Reference File</p>
+                        <a title="Download" download href="/assets/files/reference.pdf" target="_self">
+                            <button type="button" class="btn btn-default btn-sm">
+                                <span class="glyphicon glyphicon-download-alt"></span> Download
+                            </button>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div>
+                        <p>Select file</p>
+                        <input type="file" name="img" (click)="uploadRefFile($event)">
+                    </div>
+                </div>
+                <div class="col-md-3 text-center paddTop20">
+                    <div>
+                        <button type="button" class=" disable btn btn-default btn-sm btn-primary btn-md" id="submit-btn" [disabled]="disabled"> S u b m i t
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center paddTop20">
+                    <p>Task ID:</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="col-md-12 marTop30">
+        <div class="row">
+            <div class="col-md-3">
+                <div>
+                    <p>Reference File</p>
+
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <a title="Download" download href="/assets/files/reference.pdf" target="_self">
+                    <button type="button" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-download-alt"></span> Download
+                    </button>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="col-md-12 marTop30">
+        <div class="row">
+            <div class="col-md-3">
+                <p>Upload file</p>
+            </div>
+            <div class="col-md-3">
+                <input type="file" name="img" (click)="uploadRefFile($event)">
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12 marTop30">
+        <div class="row">
+            <div class="col-md-3">
+                <p>FeedbackForm</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12 marTop30">
+        <div class="row">
+            <div class="col-md-3">
+                <p>Task ID: </p>
+            </div>
+            <div class="col-md-3">
+                <b>{{taskId}}</b>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12 marTop30">
+        <div class="row">
+            <div class="col-md-3">
+                <button type="button" class=" disable btn btn-default btn-sm btn-primary btn-md" id="submit-btn" [disabled]="disabled"> S u b m i t
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="myModal" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" (click)="closeModal()">&times;</button>
+                    <h4 class="modal-title text-align">Analytics</h4>
+                </div>
+                <div class="modal-body">
+                    <p-table [value]="analyticsData" [paginator]="true" [rows]="10">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Date
+                                    <p-calendar [(ngModel)]="toSearchDate" [showIcon]="true" (onSelect)="onSelectDate()"></p-calendar>
+                                </th>
+                                <th>Count</th>
+                            </tr>
+
+                        </ng-template>
+                        <ng-template pTemplate="body" let-count>
+                            <tr>
+                                <td>{{count.date}}</td>
+                                <td>{{count.count}}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" (click)="closeModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>

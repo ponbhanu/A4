@@ -1,0 +1,148 @@
+.my-drop-zone {
+    border: dotted 3px lightgray;
+}
+
+.nv-file-over {
+    border: dotted 3px red;
+}
+
+/* Default class applied to drop zones on over */
+
+.another-file-over-class {
+    border: dotted 3px green;
+}
+
+.bar-grn {
+width: 1%;
+height: 20px;
+background-color: #4CAF50;
+}
+
+.bar-red {
+width: 1%;
+height: 20px;
+background-color:red;
+}
+#failBar {
+    width: 1%;
+    height: 20px;
+    background-color: #4CAF50;
+    }
+
+#myProgress {
+width: 100%;
+background-color: #ddd;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+table,
+th,
+td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.text-center {
+    text-align: center
+}
+.pad50 {
+    padding-top:50px;
+}
+.success-mark {
+    color: green;
+}
+.fail-mark {
+    color: red;
+}
+.padd80 {
+    padding-top:80px;
+}
+.marTop10 {
+    margin-top:10px;
+}
+.marTop30 {
+    margin-top:30px !important;
+}
+.marTop50 {
+    margin-top:50px !important;
+}
+.marTop70 {
+    margin-top:70px !important;
+}
+.btn-width {
+    width:100px;
+}
+.paddTop20{
+    padding-top: 20px;
+}
+.padding-btm100 {
+    padding-bottom: 100px !important;
+}
+.analytics {
+    padding-left: 30px;
+    margin-top: 20px;
+}
+.mtop30 {
+    margin-top: 30px;
+}.marBot30 {
+    margin-bottom: 30px;
+}
+.tabBgColor {
+    background-color: lightblue !important;
+}
+.tabsOuterLine {
+    border: 1px solid #eee;
+}
+* {box-sizing: border-box}
+body {font-family: "Lato", sans-serif;}
+
+/* Style the tab */
+.tab {
+    float: left;
+    border: 1px solid #ccc;
+    background-color: white;
+    width: 15%;
+    height: 800px;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+    display: block;
+    background-color: inherit;
+    color: black;
+    padding: 22px 16px;
+    width: 100%;
+    border: none;
+    outline: none;
+    text-align: left;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+    background-color: #ddd;
+}
+
+/* Create an active/current "tab button" class */
+.tab button.active {
+    background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+    float: left;
+    padding: 0px 12px;
+    border: 1px solid #ccc;
+    width: 85%;
+    border-left: none;
+    height: 800px;
+}
+.tabsBgColor {
+    background-color: lightblue !important;
+}
