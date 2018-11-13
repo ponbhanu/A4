@@ -1,6 +1,7 @@
 import { Component,Input} from '@angular/core';
 import { HttpService } from '../http.service';
 import { getHeaders } from '../app.component';
+import { ToasterService } from 'angular2-toaster';
 
 @Component({
   selector: 'ml-tab',
@@ -9,7 +10,7 @@ import { getHeaders } from '../app.component';
 })
 export class MlComponent {
   taskId:any;
-  constructor(public httpService:HttpService) {
+  constructor(public httpService:HttpService,public toasterService: ToasterService) {
     this.asyncPredict();
   }
   
@@ -34,27 +35,28 @@ export class MlComponent {
     .subscribe(response => {
       if (response.resultCode && response.resultCode === 'OK') {
         this.taskId = response.resultObj.taskId;
-        this.callLoader("task-bar");
+        //this.callLoader("task-bar");
         this.httpService.manageHttp('get','http://localhost:3000/api/'+this.taskId+'/metrics','', getHeaders())
         .subscribe(response => {
           if (response.resultCode && response.resultCode === 'OK') {
             this.taskId = response.resultObj.taskId;
-            this.callLoader("metrics-bar");
+            //this.callLoader("metrics-bar");
           } else {
-
+            this.toasterService.pop('error', 'Status failed at Metrics');
           }
             this.httpService.manageHttp('get','http://localhost:3000/api/'+this.taskId+'/status','', getHeaders())
             .subscribe(response => {
               if (response.resultCode && response.resultCode === 'OK') {
                 this.taskId = response.resultObj.taskId;
-                this.callLoader("status-bar");
+                this.callLoader("ml-bar");
               } else {
-
+                this.toasterService.pop('error', 'Status failed at Status');
               }
             });
         });
       } else {
         this.taskId = '';
+        this.toasterService.pop('error', 'Status failed at getting TaskId');
       }
     });
   };
