@@ -29,6 +29,8 @@ export class AppComponent {
   mlTab:any;
   taskId:any;
   isExecuteMl:any = false;
+  execOcrStatus:any = false;
+  execMlStatus:any = false;
   constructor(public toasterService: ToasterService, public httpService:HttpService) {
     this.analyticsData = this.getDates();
   }
@@ -124,6 +126,10 @@ export class AppComponent {
                   this.isExecuteMl = true;
                   this.selectedFiles = [];
                   this.toasterService.pop('success', 'All files uploaded successfully');
+                  this.execOcrStatus = true;
+                  setTimeout(()=>{ 
+                    this.execMlStatus = true;
+               }, 3000);
                 }
               }
             }
