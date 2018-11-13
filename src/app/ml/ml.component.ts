@@ -39,21 +39,20 @@ export class MlComponent {
         this.httpService.manageHttp('get','http://localhost:3000/api/'+this.taskId+'/metrics','', getHeaders())
         .subscribe(response => {
           if (response.resultCode && response.resultCode === 'OK') {
-            this.taskId = response.resultObj.taskId;
             //this.callLoader("metrics-bar");
-          } else {
-            this.toasterService.pop('error', 'Status failed at Metrics');
-          }
+          
             this.httpService.manageHttp('get','http://localhost:3000/api/'+this.taskId+'/status','', getHeaders())
             .subscribe(response => {
               if (response.resultCode && response.resultCode === 'OK') {
-                this.taskId = response.resultObj.taskId;
                 this.callLoader("ml-bar");
               } else {
                 this.toasterService.pop('error', 'Status failed at Status');
               }
             });
-        });
+        } else {
+          this.toasterService.pop('error', 'Status failed at Metrics');
+        }
+      });
       } else {
         this.taskId = '';
         this.toasterService.pop('error', 'Status failed at getting TaskId');
