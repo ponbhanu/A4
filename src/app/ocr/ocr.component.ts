@@ -30,34 +30,32 @@ export class OcrComponent {
     };
   }
 
-  asyncPredict() {
+  asyncPredict(){
     let formData: FormData = new FormData();
     this.httpService.manageHttp('post','http://localhost:3000/api/asyncpredict', formData, getHeaders())
     .subscribe(response => {
       if (response.resultCode && response.resultCode === 'OK') {
-        this.taskId = response.resultObj.taskId;
         //this.callLoader("task-bar");
         this.httpService.manageHttp('get','http://localhost:3000/api/'+this.taskId+'/metrics','', getHeaders())
         .subscribe(response => {
           if (response.resultCode && response.resultCode === 'OK') {
-            this.taskId = response.resultObj.taskId;
             //this.callLoader("metrics-bar");
-          } else {
-            this.toasterService.pop('error', 'Status failed at Metrics');
-          }
+          
             this.httpService.manageHttp('get','http://localhost:3000/api/'+this.taskId+'/status','', getHeaders())
             .subscribe(response => {
               if (response.resultCode && response.resultCode === 'OK') {
-                this.taskId = response.resultObj.taskId;
-                this.callLoader("ocr-bar");
+                this.callLoader("ml-bar");
               } else {
-                this.toasterService.pop('error', 'Status failed at Status');
+                this.toasterService.pop('error', 'Status failed at CSV');
               }
             });
-        });
+        } else {
+          this.toasterService.pop('error', 'Status failed at RFP');
+        }
+      });
       } else {
         this.taskId = '';
-        this.toasterService.pop('error', 'Status failed at getting TaskId');
+        this.toasterService.pop('error', 'Status failed at getting Split');
       }
     });
   };
