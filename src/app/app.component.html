@@ -87,14 +87,36 @@
                 <span class="glyphicon glyphicon-trash"></span> Remove all
             </button>
         </div>
-        <div class="col-md-12 marTop70" *ngIf="isExecuteMl">
+        <div class="col-md-10 marTop70">
             <h4>OCR Status</h4>
-            <ocr-tab></ocr-tab>
+            <div class="progress marTop10" *ngIf="!execOcrStatus">
+                <div id="myProgress">
+                    <div id="bar" class="bar-grn"></div>
+                </div>
+            </div>
+            <span *ngIf="execOcrStatus">
+                <ocr-tab></ocr-tab>
+            </span>
+           
+            <!-- </div> -->
+
         </div>
-        <div class="col-md-12 marTop50" *ngIf="isExecuteMl">
+        <div class="col-md-10 marTop70">
             <h4>ML Status</h4>
-            <ml-tab></ml-tab>
+            <div class="progress marTop10" *ngIf="!execMlStatus">
+                <div id="myProgress">
+                    <div id="bar" class="bar-grn"></div>
+                </div>
+            </div>
+            <span *ngIf="execMlStatus">
+                <ml-tab></ml-tab>
+            </span>
+           
+            <!-- </div> -->
+
         </div>
+
+
     </div>
 
     <div id="ocr" class="tabcontent tabHeight" *ngIf="ocrTab">
