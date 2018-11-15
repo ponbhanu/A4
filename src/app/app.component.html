@@ -1,19 +1,28 @@
 <div class="container pad50 padding-btm100">
     <div class="navbar navbar-default">
         <div class="navbar-header">
-            <a class="navbar-brand" href>File Upload</a>
+            <a class="navbar-brand" href>INTELLIGENT CONTRACTS-DASHBOARD</a>
         </div>
     </div>
     <toaster-container></toaster-container>
     <div class="tab">
         <button id="fileUploadTab" class="tablinks tabsBgColor" (click)="onClickTabs('fileUploadTab')">File upload</button>
-        <button id="ocrTab" class="tablinks" (click)="onClickTabs('ocrTab')">O C R</button>
-        <button id="mlTab" class="tablinks" (click)="onClickTabs('mlTab')">M L</button>
+        <button id="ocrTab" class="tablinks" (click)="onClickTabs('ocrTab')">O C R - M L</button>
+        <button id="mlTab" class="tablinks" tooltip="To update,delete and insert the existing clause id assignment" placement="bottom"
+            show-delay="100" (click)="onClickTabs('assignmentTab')">Clause Id
+            <br>Assginment
+            <br>Uploads</button>
+        <button id="mlTab" class="tablinks" tooltip="To upload the feedback for any changes in assignments and/or data correction"
+            placement="bottom" show-delay="100" (click)="onClickTabs('feedBackTab')">Feedback Form</button>
     </div>
+
 
     <div id="fileUpload" class="tabcontent tabHeight" *ngIf="fileUploadTab">
         <div class="row">
             <div class="col-md-3">
+                <div class="tooltip">Hover over me
+                    <span class="tooltiptext">Tooltip text</span>
+                </div>
                 <h3>Select files</h3>
                 <input type="file" name="img" multiple (change)="onChange($event)">
             </div>
@@ -87,139 +96,142 @@
                 <span class="glyphicon glyphicon-trash"></span> Remove all
             </button>
         </div>
-        <div class="col-md-10 marTop70">
-            <h4>OCR Status</h4>
-            <div class="progress marTop10" *ngIf="!execOcrStatus">
-                <div id="myProgress">
-                    <div id="bar" class="bar-grn"></div>
+        <div class="col-md-12">
+            <div class="col-md-8 marTop70">
+                <h4>OCR Status</h4>
+                <div class="progress marTop10">
+                    <div id="myProgress">
+                        <div id="ocr-bar" class="bar-grn"></div>
+                    </div>
                 </div>
             </div>
-            <span *ngIf="execOcrStatus">
-                <ocr-tab></ocr-tab>
-            </span>
-           
-            <!-- </div> -->
-
+            <div class="col-md-4 marTop70">
+                <table style="width:100%">
+                    <tr>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Result</th>
+                    </tr>
+                    <tr *ngFor="let x of ocrStatusList">
+                        <td class="text-center">{{x.status}}</td>
+                        <td class="text-center" *ngIf="x.success">
+                            <i class="text-center success-mark  glyphicon glyphicon-ok"></i>
+                        </td>
+                        <td class="text-center" *ngIf="!x.success">
+                            <i class="text-center fail-mark glyphicon glyphicon-ban-circle"></i>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
-        <div class="col-md-10 marTop70">
-            <h4>ML Status</h4>
-            <div class="progress marTop10" *ngIf="!execMlStatus">
-                <div id="myProgress">
-                    <div id="bar" class="bar-grn"></div>
+
+        <div class="col-md-12">
+            <div class="col-md-8 marTop70">
+                <h4>ML Status</h4>
+                <div class="progress marTop10">
+                    <div id="myProgress">
+                        <div id="ml-bar" class="bar-grn"></div>
+                    </div>
                 </div>
             </div>
-            <span *ngIf="execMlStatus">
-                <ml-tab></ml-tab>
-            </span>
-           
-            <!-- </div> -->
-
-        </div>
-
-
-    </div>
-
-    <div id="ocr" class="tabcontent tabHeight" *ngIf="ocrTab">
-        <div class="marTop30">
-            <ocr-tab></ocr-tab>
-        </div>
-    </div>
-
-    <div id="ml" class="tabcontent tabHeight" *ngIf="mlTab">
-        <div class="marTop30">
-            <ml-tab></ml-tab>
+            <div class="col-md-4 marTop70">
+                <table style="width:100%">
+                    <tr>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Result</th>
+                    </tr>
+                    <tr *ngFor="let x of mlStatusList">
+                        <td class="text-center">{{x.status}}</td>
+                        <td class="text-center" *ngIf="x.success">
+                            <i class="text-center success-mark  glyphicon glyphicon-ok"></i>
+                        </td>
+                        <td class="text-center" *ngIf="!x.success">
+                            <i class="text-center fail-mark glyphicon glyphicon-ban-circle"></i>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
 
-    <div id="Tokyo" class="tabcontent" *ngIf="fileUpload">
+    <div id="ocrTab" class="tabcontent" *ngIf="ocrTab">
         <div class="col-md-12">
             <div class="row">
-                <div class="col-md-3">
-                    <div>
-                        <p>Reference File</p>
-                        <a title="Download" download href="/assets/files/reference.pdf" target="_self">
-                            <button type="button" class="btn btn-default btn-sm">
-                                <span class="glyphicon glyphicon-download-alt"></span> Download
-                            </button>
-                        </a>
-                    </div>
+                <div class="col-md-10 marTop50">
+                                        <ocr-tab></ocr-tab>
                 </div>
-                <div class="col-md-3">
-                    <div>
-                        <p>Select file</p>
-                        <input type="file" name="img" (click)="uploadRefFile($event)">
-                    </div>
-                </div>
-                <div class="col-md-3 text-center paddTop20">
-                    <div>
-                        <button type="button" class=" disable btn btn-default btn-sm btn-primary btn-md" id="submit-btn" [disabled]="disabled"> S u b m i t
-                        </button>
-                    </div>
-                </div>
-                <div class="col-md-3 text-center paddTop20">
-                    <p>Task ID:</p>
-                </div>
+
             </div>
+
         </div>
     </div>
-    <hr>
-    <div class="col-md-12 marTop30">
-        <div class="row">
-            <div class="col-md-3">
+
+    <!-- <div id="mlTab" class="tabcontent" *ngIf="mlTab">
+        <ml-tab></ml-tab>
+    </div> -->
+
+
+    <div id="assignment" class="tabcontent" *ngIf="assignmentTab">
+        <div class="col-md-12 marTop30">
+
+            <div class="col-md-4">
                 <div>
                     <p>Reference File</p>
-
+                    <a title="Download" download href="/assets/files/reference.pdf" target="_self">
+                        <button type="button" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-download-alt"></span> Download
+                        </button>
+                    </a>
                 </div>
             </div>
 
-            <div class="col-md-3">
-                <a title="Download" download href="/assets/files/reference.pdf" target="_self">
-                    <button type="button" class="btn btn-default btn-sm">
-                        <span class="glyphicon glyphicon-download-alt"></span> Download
-                    </button>
-                </a>
-            </div>
-
-        </div>
-    </div>
-
-    <div class="col-md-12 marTop30">
-        <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <p>Upload file</p>
-            </div>
-            <div class="col-md-3">
+
                 <input type="file" name="img" (click)="uploadRefFile($event)">
             </div>
-        </div>
-    </div>
 
-    <div class="col-md-12 marTop30">
-        <div class="row">
-            <div class="col-md-3">
-                <p>FeedbackForm</p>
+            <div class="col-md-4">
+                <button type="button" class=" disable btn btn-default btn-sm btn-primary btn-md" id="submit-btn" [disabled]="disabled"> S u b m i t
+                </button>
+
             </div>
-        </div>
-    </div>
-    <div class="col-md-12 marTop30">
-        <div class="row">
-            <div class="col-md-3">
-                <p>Task ID: </p>
-            </div>
-            <div class="col-md-3">
-                <b>{{taskId}}</b>
+
+            <div class="progress marTop10">
+                <div id="myProgress">
+                    <div id="ml-bar" class="bar-grn"></div>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="col-md-12 marTop30">
-        <div class="row">
-            <div class="col-md-3">
+    <div id="feedBack" class="tabcontent" *ngIf="feedBackTab">
+        <div class="col-md-12 marTop30">
+            <div class="col-md-4">
+                <div>
+                    <p>Reference File</p>
+                    <a title="Download" download href="/assets/files/reference.pdf" target="_self">
+                        <button type="button" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-download-alt"></span> Download
+                        </button>
+                    </a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <p>Upload file</p>
+                <input type="file" name="img" (click)="uploadRefFile($event)">
+            </div>
+            <div class="col-md-4">
                 <button type="button" class=" disable btn btn-default btn-sm btn-primary btn-md" id="submit-btn" [disabled]="disabled"> S u b m i t
                 </button>
             </div>
         </div>
+        <div class="progress marTop10">
+            <div id="myProgress">
+                <div id="ml-bar" class="bar-grn"></div>
+            </div>
+        </div>
     </div>
+
 
     <div class="modal fade" id="myModal" role="dialog" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-lg">
