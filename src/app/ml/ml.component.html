@@ -10,25 +10,24 @@
         </div>
       </div>
     </div>
-    <!-- <div class="col-md-2">
-      <div>
-        Metrics :
-        <div class="progress marTop10">
-          <div id="myProgress">
-            <div id="metrics-bar" class="bar-grn"></div>
-          </div>
-        </div>
-      </div>
+   
+
+    <div class="col-md-10 marTop70">
+        <table style="width:100%">
+            <tr>
+                <th class="text-center">Status</th>
+                <th class="text-center">Result</th>
+            </tr>
+            <tr *ngFor="let x of mlStatusList">
+                <td class="text-center">{{x.status}}</td>
+                <td class="text-center" *ngIf="x.success">
+                    <i class="text-center success-mark  glyphicon glyphicon-ok"></i>
+                </td>
+                <td class="text-center" *ngIf="!x.success">
+                    <i class="text-center fail-mark glyphicon glyphicon-ban-circle"></i>
+                </td>
+            </tr>
+        </table>
     </div>
-    <div class="col-md-2">
-      <div>
-        Status :
-        <div class="progress marTop10">
-          <div id="myProgress">
-            <div id="status-bar" class="bar-grn"></div>
-          </div>
-        </div>
-      </div>
-    </div> -->
   </div>
 </div>
