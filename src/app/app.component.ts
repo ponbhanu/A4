@@ -28,6 +28,8 @@ export class AppComponent {
   ocrTab:any;
   mlTab:any;
   taskId:any;
+  assignmentTab:any = false;
+  feedBackTab: any = false;
   isExecuteMl:any = false;
   execOcrStatus:any = false;
   execMlStatus:any = false;
@@ -89,30 +91,33 @@ export class AppComponent {
     }
 
     var headers = getHeaders();
-    // for (var k = 0; k < this.files.length; k++) {
-    //   if (this.files[k].isPrimary) {
-    //     if (selectedFiles.indexOf(this.files[k]) > -1) {
-    //       headers.append('primary', this.files[k].name);
-    //       k = this.files.length;
-    //     } else {
-    //       this.toasterService.pop('error', 'Primary file must be a selected file');
-    //       return;
-    //     }
-    //   }
-    // }
+    for (var k = 0; k < this.files.length; k++) {
+      if (this.files[k].isPrimary) {
+        if (selectedFiles.indexOf(this.files[k]) > -1) {
+          headers.append('primary', this.files[k].name);
+          k = this.files.length;
+        } else {
+          this.toasterService.pop('error', 'Primary file must be a selected file');
+          return;
+        }
+      }
+    }
     let formData: FormData = new FormData();
     formData.append('file', file);
-    this.httpService.manageHttp('post','http://localhost:3000/api/uploadFile', formData, headers)
+    localStorage.clear();
+    this.httpService.manageHttp('post','http://104.211.60.42:8080/rfp/ic/yankees/upload/', formData, headers)
       .subscribe(response => {
         if (response.resultCode === 'OK') {
-          var lotNumber = 2;
-          var headers = new Headers();
+          var res = response,
+          lotNumber,
+          headers = new Headers();
           let formData: FormData = new FormData();
-          //lotNumber = response.json().resultObject[0].lotNumber;
-          this.httpService.manageHttp('post','http://localhost:3000/api/sendLotNumber/'+lotNumber, formData, headers)
+          lotNumber = res.resultObject[0].lotNumber;
+          this.httpService.manageHttp('post','http://104.211.60.42:8080/rfp/ic/yankees/store/'+lotNumber, formData, headers)
           .subscribe(response => {
              if (response.resultCode && response.resultCode === 'OK') {
               this.callLoader("bar");
+              var rfpId = response.resultObject[0].rfpInputId;
               for (var j = 0; j < this.files.length; j++) {
                 if (this.files[j].id === toFindId) {
                   this.files[j].status = 'success';
@@ -127,6 +132,7 @@ export class AppComponent {
                   this.selectedFiles = [];
                   this.toasterService.pop('success', 'All files uploaded successfully');
                   this.execOcrStatus = true;
+                  this.execOcrStatuses(rfpId)
                   setTimeout(()=>{ 
                     this.execMlStatus = true;
                }, 3000);
@@ -194,6 +200,45 @@ export class AppComponent {
     this.uploadFiles('multiple', 0, this.selectedFiles);
   }
 
+  execOcrStatuses(rfpId){
+    let formData: FormData = new FormData();
+    this.httpService.manageHttp('post','http://104.211.60.42:8080/rfp/ic/yankees/split/'+rfpId,'',getHeaders())
+    .subscribe(response => {
+      if (response.resultCode && response.resultCode === 'OK') {
+        //this.callLoader("task-bar");
+        this.httpService.manageHttp('post','http://104.211.60.42:8080/rfp/ic/yankees/ocr/'+rfpId,'', getHeaders())
+        .subscribe(response => {
+          if (response.resultCode && response.resultCode === 'OK') {
+            //this.callLoader("metrics-bar");
+          
+            this.httpService.manageHttp('post','http://104.211.60.42:8080/rfp/ic/yankees/model/'+rfpId,'', getHeaders())
+            .subscribe(response => {
+              if (response.resultCode && response.resultCode === 'OK') {
+                this.httpService.manageHttp('post','http://104.211.60.42:8080/rfp/ic/yankees/xls/'+rfpId,'', getHeaders())
+                .subscribe(response => {
+                  if (response.resultCode && response.resultCode === 'OK') {
+                    this.callLoader("ml-bar");
+                    this.toasterService.pop('success', 'ocr is completed');
+                  } else {
+                    this.toasterService.pop('error', 'Status failed at CSV');
+                  }
+                });
+               
+              } else {
+                this.toasterService.pop('error', 'Status failed at CSV');
+              }
+            });
+        } else {
+          this.toasterService.pop('error', 'Status failed at RFP');
+        }
+      });
+      } else {
+        this.taskId = '';
+        this.toasterService.pop('error', 'Status failed at getting Split');
+      }
+    });
+  };
+
   closeModal() {
     this.analyticsData = this.getDates();
     this.toSearchDate = '';
@@ -209,7 +254,6 @@ export class AppComponent {
       }
     }
   };
-
   onClickTabs(tabId) {
     this.emptyFiles();
     var tabsArr = ['fileUploadTab','ocrTab','mlTab'],
@@ -220,17 +264,35 @@ export class AppComponent {
     };
     $('#'+tabId).addClass('tabsBgColor');
     if (tabId === 'fileUploadTab') {
+      this.assignmentTab = false;
       this.fileUploadTab = true;
       this.ocrTab = false;
       this.mlTab = false;
+      this.feedBackTab = false;
     } else if (tabId === 'ocrTab') {
+      this.assignmentTab = false;
       this.fileUploadTab = false;
       this.ocrTab = true;
       this.mlTab = false;
+      this.feedBackTab = false;
     } else if (tabId === 'mlTab') {
+      this.assignmentTab = false;
       this.fileUploadTab = false;
       this.ocrTab = false;
       this.mlTab = true;
+      this.feedBackTab = false;
+    } else if (tabId === 'assignmentTab') {
+      this.assignmentTab = true;
+      this.fileUploadTab = false;
+      this.ocrTab = false;
+      this.mlTab = false;
+      this.feedBackTab = false;
+    } else if (tabId === 'feedBackTab') {
+      this.assignmentTab = false;
+      this.fileUploadTab = false;
+      this.ocrTab = false;
+      this.mlTab = false;
+      this.feedBackTab = true;
     }
   };
 
@@ -245,12 +307,3 @@ export function getHeaders() {
   var headers = new Headers();
   return headers;
 }
-
-
-
-
-
-
-
-
-
