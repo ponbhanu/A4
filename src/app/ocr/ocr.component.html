@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-md-10">
             <div>
-                <!-- OCR status: -->
+                <h3 class="text-center">OCR</h3>
                 <div class="progress marTop10">
                     <div id="myProgress">
                         <div id="ocr-bar" class="bar-grn"></div>
@@ -10,59 +10,58 @@
                 </div>
             </div>
         </div>
-
-        
-
-
-        <!-- <div class="col-md-2">
-            <div>
-                OCR status:
-                <div class="progress marTop10">
-                    <div id="myProgress">
-                        <div id="bar" class="bar-grn"></div>
-                    </div>
-                </div>
+        <div class="col-md-10 marTop70">
+                <table style="width:100%">
+                    <tr>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Result</th>
+                    </tr>
+                    <tr *ngFor="let x of ocrStatusList">
+                        <td class="text-center">{{x.status}}</td>
+                        <td *ngIf="x.success" class="text-center" >
+                            <i class="text-center success-mark  glyphicon glyphicon-ok"></i>
+                        </td>
+                        <td *ngIf="!x.success" class="text-center" >
+                            <i class="text-center fail-mark glyphicon glyphicon-ban-circle"></i>
+                        </td>
+                    </tr>
+                </table>
             </div>
-        </div>
-        <div class="col-md-2">
-            <div>
-                RFP modules:
-                <div class="progress marTop10">
-                    <div id="myProgress">
-                        <div id="bar" class="bar-grn"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div>
-                XLS:
-                <div class="progress marTop10">
-                    <div id="myProgress">
-                        <div id="bar" class="bar-grn"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div>
-                Filter:
-                <div class="progress marTop10">
-                    <div id="myProgress">
-                        <div id="bar" class="bar-grn"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div>
-                CSV:
-                <div class="progress marTop10">
-                    <div id="myProgress">
-                        <div id="bar" class="bar-grn"></div>
-                    </div>
-                </div>
-            </div>
-        </div> -->
     </div>
 </div>
+
+
+
+<div class="col-md-12 marTop30">
+    <div class="row">
+      <div class="col-md-10">
+        <div>
+          <h3 class="text-center">ML</h3>
+          <div class="progress marTop10">
+            <div id="myProgress">
+              <div id="ml-bar" class="bar-grn"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+     
+  
+      <div class="col-md-10 marTop70">
+          <table style="width:100%">
+              <tr>
+                  <th class="text-center">Status</th>
+                  <th class="text-center">Result</th>
+              </tr>
+              <tr *ngFor="let x of mlStatusList">
+                  <td class="text-center">{{x.status}}</td>
+                  <td class="text-center" *ngIf="x.success">
+                      <i class="text-center success-mark  glyphicon glyphicon-ok"></i>
+                  </td>
+                  <td class="text-center" *ngIf="!x.success">
+                      <i class="text-center fail-mark glyphicon glyphicon-ban-circle"></i>
+                  </td>
+              </tr>
+          </table>
+      </div>
+    </div>
+  </div>
