@@ -6,7 +6,7 @@ import {ToasterModule, ToasterService} from 'angular2-toaster';
 import {TableModule} from 'primeng/table';
 import {CalendarModule} from 'primeng/calendar';
 import { FormsModule } from '@angular/forms';
-
+import { TooltipModule } from 'ng2-tooltip-directive';
 import { AppComponent } from './app.component';
 import { HttpService } from './http.service';
 import { MlComponent } from './ml/ml.component';
@@ -22,6 +22,7 @@ import { OcrComponent } from './ocr/ocr.component';
     BrowserModule,
     BrowserAnimationsModule,
     HttpModule,
+    TooltipModule,
     TableModule,
     CalendarModule,
     FormsModule,
