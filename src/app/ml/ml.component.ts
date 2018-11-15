@@ -1,4 +1,4 @@
-import { Component,Input} from '@angular/core';
+import { Component,Input, OnChanges} from '@angular/core';
 import { HttpService } from '../http.service';
 import { getHeaders } from '../app.component';
 import { ToasterService } from 'angular2-toaster';
@@ -6,13 +6,21 @@ import { ToasterService } from 'angular2-toaster';
 @Component({
   selector: 'ml-tab',
   templateUrl: './ml.component.html',
-  styleUrls: ['./ml.component.css']
+  styleUrls: ['./ml.component.css'],
+  inputs:['inputData']
 })
-export class MlComponent {
+export class MlComponent implements OnChanges{
   taskId:any;
+  @Input() inputData:any;
+  mlStatusList: any = [{'status':'clauseId','success':false},{'status':'status','success':false}];
+  
   constructor(public httpService:HttpService,public toasterService: ToasterService) {
-    this.asyncPredict();
+    this.asyncMlPredict();
   }
+
+  ngOnChanges(changes) {
+    console.log(changes);
+}
   
   callLoader(id) {
     var elem = document.getElementById(id),
@@ -29,31 +37,33 @@ export class MlComponent {
     };
   }
 
-  asyncPredict(){
+  asyncMlPredict(){
     let formData: FormData = new FormData();
-    this.httpService.manageHttp('post','http://localhost:3000/api/asyncpredict', formData, getHeaders())
+    this.httpService.manageHttp('post','http://localhost:3000/api/sendLotNumber/'+12,'', getHeaders())
     .subscribe(response => {
       if (response.resultCode && response.resultCode === 'OK') {
-        this.taskId = response.resultObj.taskId;
-        //this.callLoader("task-bar");
-        this.httpService.manageHttp('get','http://localhost:3000/api/'+this.taskId+'/metrics','', getHeaders())
+        this.mlStatusList[0].success = true;
+        this.httpService.manageHttp('post','http://localhost:3000/api/sendLotNumber/'+12,'', getHeaders())
         .subscribe(response => {
           if (response.resultCode && response.resultCode === 'OK') {
-            //this.callLoader("metrics-bar");
-          
-            this.httpService.manageHttp('get','http://localhost:3000/api/'+this.taskId+'/status','', getHeaders())
+            this.mlStatusList[1].success = true;
+            this.httpService.manageHttp('post','http://localhost:3000/api/sendLotNumber/'+12,'', getHeaders())
             .subscribe(response => {
               if (response.resultCode && response.resultCode === 'OK') {
+                this.mlStatusList[2].success = true;
                 this.callLoader("ml-bar");
               } else {
+                this.mlStatusList[0].success = true;
                 this.toasterService.pop('error', 'Status failed at Status');
               }
             });
         } else {
+          this.mlStatusList[0].success = true;
           this.toasterService.pop('error', 'Status failed at Metrics');
         }
       });
       } else {
+        this.mlStatusList[0].success = false;
         this.taskId = '';
         this.toasterService.pop('error', 'Status failed at getting TaskId');
       }
