@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Response, Headers } from '@angular/http';
-import 'rxjs/add/operator/map';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 
@@ -19,13 +19,13 @@ export class HttpService {
     } else if (method === 'delete') {
       this.toRunMethod = this.http.delete(url, { headers: head });
     }
-    return this.toRunMethod.map((response: Response) => {
+    return this.toRunMethod.pipe(map((response: Response) => {
       if (response  && response.json()) {
         return response.json();
       }
     }, (error) => {
       console.log(error);
-    });
+    }));
   };
 }
 
